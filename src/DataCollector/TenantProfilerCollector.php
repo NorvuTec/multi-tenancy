@@ -16,16 +16,12 @@ class TenantProfilerCollector extends AbstractDataCollector {
     {}
 
     public function collect(Request $request, Response $response, ?\Throwable $exception = null): void {
-
-    }
-
-    public function getCurrentTenant(): ?Tenant {
-        return $this->multiTenancyService->getCurrentTenant();
+        $this->data['tenant_name'] = $this?->multiTenancyService?->getCurrentTenant()?->getIdentifier() ?: "--";
     }
 
     public function getTenantName(): string
     {
-        return $this->getCurrentTenant()?->getIdentifier() ?: "--";
+        return $this->data['tenant_name'];
     }
 
 }
