@@ -1,0 +1,17 @@
+parameters:
+  multi_tenancy:
+    tenant_class: App\Entity\Tenant
+    default:
+      server_ip: 127.0.0.1
+      database:
+        port: 3306
+        name: tenancy_database
+        user: tenant
+        password: tenant
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Norvutec\MultiTenancyBundle\EventSubscriber\TenantRequestListener:
+    arguments: ['@doctrine.orm.default_entity_manager', '@doctrine.dbal.tenant_connection', '%multi_tenancy.tenant_class%']
