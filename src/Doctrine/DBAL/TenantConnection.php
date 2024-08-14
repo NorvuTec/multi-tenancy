@@ -8,6 +8,8 @@ use Norvutec\MultiTenancyBundle\Entity\Tenant;
 /**
  * Implements the special DBAL connection for tenants
  * This class is used to switch the connection to the tenant's database
+ *
+ * @package Norvutec\MultiTenancyBundle\Doctrine\DBAL
  */
 class TenantConnection extends Connection implements TenantConnectionInterface {
 
@@ -15,14 +17,21 @@ class TenantConnection extends Connection implements TenantConnectionInterface {
         if ($this->isConnected()) {
             $this->close();
         }
-        $params['url'] = sprintf("mysql://%s:%s@%s:%s/%s",
-            $tenant->getDatabaseUser(),
-            $tenant->getDatabasePassword(),
-            $tenant->getServerIp(),
-            $tenant->getDatabasePort(),
-            $tenant->getDatabaseName()
-        );
-        $params['dbname'] = $tenant->getDatabaseName();
+        if($tenant->getDatabaseName() != null) {
+            $params['dbname'] = $tenant->getDatabaseName();
+        }
+        if($tenant->getServerIp() != null) {
+            $params['host'] = $tenant->getServerIp();
+        }
+        if($tenant->getDatabasePort() != null) {
+            $params['port'] = $tenant->getDatabasePort();
+        }
+        if($tenant->getDatabaseUser() != null) {
+            $params['user'] = $tenant->getDatabaseUser();
+        }
+        if($tenant->getDatabasePassword() != null) {
+            $params['password'] = $tenant->getDatabasePassword();
+        }
         parent::__construct(
             $params,
             $this->_driver,

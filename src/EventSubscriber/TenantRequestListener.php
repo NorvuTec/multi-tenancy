@@ -7,10 +7,20 @@ use Norvutec\MultiTenancyBundle\Doctrine\DBAL\TenantConnectionInterface;
 use Norvutec\MultiTenancyBundle\Entity\Tenant;
 use Norvutec\MultiTenancyBundle\Exception\TenantConnectionException;
 use Norvutec\MultiTenancyBundle\Exception\TenantNotFoundException;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-readonly class TenantRequestListener implements EventSubscriberInterface {
+/**
+ * Listener for Kernel requests to change the tenant database connection
+ * based on the subdomain of the request
+ *
+ * @package Norvutec\MultiTenancyBundle\EventSubscriber
+ */
+readonly class TenantRequestListener {
 
     public function __construct(
         private EntityManagerInterface    $defaultEntityManager,
@@ -22,6 +32,7 @@ readonly class TenantRequestListener implements EventSubscriberInterface {
      * @throws TenantConnectionException
      * @throws TenantNotFoundException
      */
+    #[AsEventListener(event: KernelEvents::REQUEST)]
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
@@ -34,7 +45,31 @@ readonly class TenantRequestListener implements EventSubscriberInterface {
             // Nothing to do if the subdomain is empty
             return;
         }
+        $this->loadTenant($subdomain);
+    }
 
+    /**
+     * @throws TenantNotFoundException
+     * @throws TenantConnectionException
+     */
+    #[AsEventListener(event: ConsoleEvents::COMMAND)]
+    public function onConsoleCommand(ConsoleCommandEvent $event): void {
+        if(!$event->getInput()->hasOption("tenant")) {
+            return;
+        }
+        $tenant = $event->getInput()->getOption("tenant");
+        if($tenant == null) {
+            // Option not set
+            return;
+        }
+        $this->loadTenant($tenant);
+    }
+
+    /**
+     * @throws TenantNotFoundException
+     * @throws TenantConnectionException
+     */
+    private function loadTenant(string $subdomain): void {
         /** @var Tenant $tenant */
         $tenant = $this->defaultEntityManager->getRepository($this->tenantClass)
             ->findOneBy(array("identifier" => $subdomain));
@@ -64,13 +99,5 @@ readonly class TenantRequestListener implements EventSubscriberInterface {
         }
         return null;
     }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            RequestEvent::class => 'onKernelRequest'
-        ];
-    }
-
 
 }
