@@ -21,7 +21,12 @@ class MultiTenancyExtension extends Extension {
             new FileLocator(__DIR__ . '/../../config')
         );
         $loader->load('services.yaml');
-        $container->setParameter('multi_tenancy.tenant_class', $configs[0]['tenant_class']);
+        if(isset($configs[0]['tenant_class'])) {
+            $container->setParameter('multi_tenancy.tenant_class', $configs[0]['tenant_class']);
+        }
+        if(isset($configs[0]['tenant_select_route'])) {
+            $container->setParameter('multi_tenancy.tenant_select_route', $configs[0]['tenant_select_route']);
+        }
     }
 
 }

@@ -3,16 +3,22 @@
 namespace Norvutec\MultiTenancyBundle\EventSubscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Norvutec\MultiTenancyBundle\Attribute\NeedTenant;
 use Norvutec\MultiTenancyBundle\Doctrine\DBAL\TenantConnectionInterface;
 use Norvutec\MultiTenancyBundle\Entity\Tenant;
 use Norvutec\MultiTenancyBundle\Exception\TenantConnectionException;
 use Norvutec\MultiTenancyBundle\Exception\TenantNotFoundException;
+use Norvutec\MultiTenancyBundle\Service\MultiTenancyService;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Listener for Kernel requests to change the tenant database connection
@@ -23,9 +29,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 readonly class TenantRequestListener {
 
     public function __construct(
-        private EntityManagerInterface    $defaultEntityManager,
-        private TenantConnectionInterface $tenantConnection,
-        private string                    $tenantClass
+        private MultiTenancyService        $multiTenancyService,
+        private readonly RouterInterface   $router,
+        private string                     $tenantSelectRoute
     ) { }
 
     /**
@@ -39,13 +45,7 @@ readonly class TenantRequestListener {
             // Skip non main requests
             return;
         }
-
-        $subdomain = $this->getSubdomain($event->getRequest()->getHost());
-        if($subdomain == null) {
-            // Nothing to do if the subdomain is empty
-            return;
-        }
-        $this->loadTenant($subdomain);
+        $this->multiTenancyService->loadTenantByRequest($event->getRequest());
     }
 
     /**
@@ -62,42 +62,24 @@ readonly class TenantRequestListener {
             // Option not set
             return;
         }
-        $this->loadTenant($tenant);
+        $this->multiTenancyService->loadTenantByIdentifier($tenant);
     }
 
-    /**
-     * @throws TenantNotFoundException
-     * @throws TenantConnectionException
-     */
-    private function loadTenant(string $subdomain): void {
-        /** @var Tenant $tenant */
-        $tenant = $this->defaultEntityManager->getRepository($this->tenantClass)
-            ->findOneBy(array("identifier" => $subdomain));
-        if($tenant == null) {
-            throw new TenantNotFoundException($subdomain);
+    #[AsEventListener(event: KernelEvents::CONTROLLER_ARGUMENTS)]
+    public function onControllerArgRequest(ControllerArgumentsEvent $event): void {
+        $request = $event->getRequest();
+
+        /** @var $configuration NeedTenant */
+        if (!$configuration = $request->attributes->get('_need_tenant')) {
+            return;
         }
 
-        try{
-            $this->tenantConnection->getDriverConnection();
-            $this->tenantConnection->useTenant($tenant);
-        }catch (\Throwable $e) {
-            throw new TenantConnectionException($tenant->getIdentifier(), $e);
+        if($this->multiTenancyService->getCurrentTenant() == null) {
+            $redirectUrl = $this->router->generate($this->tenantSelectRoute);
+            $event->setController(function() use ($redirectUrl) {
+                return new RedirectResponse($redirectUrl);
+            });
         }
-    }
-
-    /**
-     * Returns the subdomain of the hostname if its existing
-     *
-     * @param string $hostname hostname to process
-     * @return string|null subdomain if existing
-     */
-    private function getSubdomain(string $hostname) : ?string
-    {
-        $exploded = explode('.', $hostname);
-        if((count($exploded) >= 2)) {
-            return explode('.', $hostname)[0];
-        }
-        return null;
     }
 
 }

@@ -1,6 +1,7 @@
 parameters:
   multi_tenancy:
     tenant_class: App\Entity\Tenant
+    tenant_select_route: app_tenant_select
 
 
 services:
@@ -8,5 +9,11 @@ services:
     autowire: true
     autoconfigure: true
 
-  Norvutec\MultiTenancyBundle\EventSubscriber\TenantRequestListener:
+  Norvutec\MultiTenancyBundle\Service\MultiTenancyService:
     arguments: ['@doctrine.orm.default_entity_manager', '@doctrine.dbal.tenant_connection', '%multi_tenancy.tenant_class%']
+
+  Norvutec\MultiTenancyBundle\EventSubscriber\TenantRequestListener:
+    arguments: ['@multi_tenancy.service', '@router.default', '%multi_tenancy.tenant_select_route%']
+
+  multi_tenancy.service:
+    alias: Norvutec\MultiTenancyBundle\Service\MultiTenancyService
