@@ -2,7 +2,7 @@
 
 namespace Norvutec\MultiTenancyBundle\Exception;
 
-class TenantNotFoundException extends \Exception {
+class TenantNotFoundException extends MultiTenancyException {
 
     public function __construct(string $tenantSubdomain)
     {

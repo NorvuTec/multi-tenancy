@@ -18,6 +18,9 @@ class Tenant {
     #[ORM\Column(length: 50)]
     private ?string $identifier = null;
 
+    #[ORM\Column(nullable: false)]
+    private bool $enabled = false;
+
     #[Ignore]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $serverIp = null;
@@ -46,6 +49,16 @@ class Tenant {
     public function setIdentifier(?string $identifier): void
     {
         $this->identifier = $identifier;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 
     #[Ignore]

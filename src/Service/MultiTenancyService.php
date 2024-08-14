@@ -5,7 +5,9 @@ namespace Norvutec\MultiTenancyBundle\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Norvutec\MultiTenancyBundle\Doctrine\DBAL\TenantConnectionInterface;
 use Norvutec\MultiTenancyBundle\Entity\Tenant;
+use Norvutec\MultiTenancyBundle\Exception\MultiTenancyException;
 use Norvutec\MultiTenancyBundle\Exception\TenantConnectionException;
+use Norvutec\MultiTenancyBundle\Exception\TenantNotEnabledException;
 use Norvutec\MultiTenancyBundle\Exception\TenantNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,13 +19,13 @@ class MultiTenancyService {
         private EntityManagerInterface      $defaultEntityManager,
         private TenantConnectionInterface   $tenantConnection,
         private string                      $tenantClass
-    ) {
-
-    }
+    ) { }
 
     /**
-     * @throws TenantNotFoundException
-     * @throws TenantConnectionException
+     * Loads the current tenant by the request
+     * @param Request $request request to process
+     *
+     * @throws MultiTenancyException
      */
     public function loadTenantByRequest(Request $request): void {
         $subdomain = $this->getSubdomain($request->getHost());
@@ -35,8 +37,10 @@ class MultiTenancyService {
     }
 
     /**
-     * @throws TenantNotFoundException
-     * @throws TenantConnectionException
+     * Loads the current tenant by its identifier
+     * @param string $identifier identifier of the tenant
+     *
+     * @throws MultiTenancyException
      */
     public function loadTenantByIdentifier(string $identifier): void {
         $this->loadTenant($identifier);
@@ -51,8 +55,23 @@ class MultiTenancyService {
     }
 
     /**
-     * @throws TenantNotFoundException
-     * @throws TenantConnectionException
+     * Returns all tenants
+     * @return array<Tenant>
+     */
+    public function getAllTenants(): array {
+        return $this->defaultEntityManager->getRepository($this->tenantClass)->findAll();
+    }
+
+    /**
+     * Returns all enabled tenants
+     * @return array<Tenant>
+     */
+    public function getAllEnabledTenants(): array {
+        return $this->defaultEntityManager->getRepository($this->tenantClass)->findBy(array("enabled" => true));
+    }
+
+    /**
+     * @throws MultiTenancyException
      */
     private function loadTenant(string $subdomain): void {
         /** @var Tenant $tenant */
@@ -60,6 +79,9 @@ class MultiTenancyService {
             ->findOneBy(array("identifier" => $subdomain));
         if($tenant == null) {
             throw new TenantNotFoundException($subdomain);
+        }
+        if(!$tenant->isEnabled()) {
+            throw new TenantNotEnabledException($subdomain);
         }
 
         try{

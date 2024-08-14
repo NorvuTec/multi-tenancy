@@ -7,7 +7,7 @@ use Throwable;
 /**
  * Exception thrown when a tenant connection cannot be established
  */
-class TenantConnectionException extends \Exception
+class TenantConnectionException extends MultiTenancyException
 {
     public function __construct(string $tenantIdentifier, Throwable $originalException)
     {

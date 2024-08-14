@@ -27,6 +27,9 @@ class MultiTenancyExtension extends Extension {
         if(isset($configs[0]['tenant_select_route'])) {
             $container->setParameter('multi_tenancy.tenant_select_route', $configs[0]['tenant_select_route']);
         }
+        if(isset($configs[0]['tenant_migration_config'])) {
+            $container->setParameter('multi_tenancy.tenant_migration_config', $configs[0]['tenant_migration_config']);
+        }
     }
 
 }

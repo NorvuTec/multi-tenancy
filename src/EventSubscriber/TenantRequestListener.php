@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Norvutec\MultiTenancyBundle\Attribute\NeedTenant;
 use Norvutec\MultiTenancyBundle\Doctrine\DBAL\TenantConnectionInterface;
 use Norvutec\MultiTenancyBundle\Entity\Tenant;
+use Norvutec\MultiTenancyBundle\Exception\MultiTenancyException;
 use Norvutec\MultiTenancyBundle\Exception\TenantConnectionException;
 use Norvutec\MultiTenancyBundle\Exception\TenantNotFoundException;
 use Norvutec\MultiTenancyBundle\Service\MultiTenancyService;
@@ -35,8 +36,7 @@ readonly class TenantRequestListener {
     ) { }
 
     /**
-     * @throws TenantConnectionException
-     * @throws TenantNotFoundException
+     * @throws MultiTenancyException
      */
     #[AsEventListener(event: KernelEvents::REQUEST)]
     public function onKernelRequest(RequestEvent $event): void
@@ -49,8 +49,7 @@ readonly class TenantRequestListener {
     }
 
     /**
-     * @throws TenantNotFoundException
-     * @throws TenantConnectionException
+     * @throws MultiTenancyException
      */
     #[AsEventListener(event: ConsoleEvents::COMMAND)]
     public function onConsoleCommand(ConsoleCommandEvent $event): void {
