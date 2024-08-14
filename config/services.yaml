@@ -17,3 +17,9 @@ services:
 
   multi_tenancy.service:
     alias: Norvutec\MultiTenancyBundle\Service\MultiTenancyService
+
+  multi_tenancy.tenant_profiler_collector:
+    class: Norvutec\MultiTenancyBundle\DataCollector\TenantProfilerCollector
+    public: false
+    tags:
+      - { name: data_collector, template: '@NorvutecMultiTenancy/tenant_profiler.html.twig' }
