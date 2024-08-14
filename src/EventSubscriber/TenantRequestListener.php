@@ -67,10 +67,7 @@ readonly class TenantRequestListener {
 
     #[AsEventListener(event: KernelEvents::CONTROLLER_ARGUMENTS)]
     public function onControllerArgRequest(ControllerArgumentsEvent $event): void {
-        $request = $event->getRequest();
-
-        /** @var $configuration NeedTenant */
-        if (!$configuration = $request->attributes->get('_need_tenant')) {
+        if(!is_array($attributes = $event->getAttributes()[NeedTenant::class] ?? null)) {
             return;
         }
 
