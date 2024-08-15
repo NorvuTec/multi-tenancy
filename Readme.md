@@ -19,17 +19,21 @@ doctrine:
     dbal:
         default_connection: default
         connections:
-            default:
-                url: '%env(resolve:DATABASE_URL)%'
-                driver: 'pdo_mysql'
-                server_version: '5.7'
-                charset: utf8mb4
-            tenant:
-                driver: 'pdo_mysql'
-                server_version: '5.7'
-                charset: utf8mb4
-                url: '%env(resolve:DATABASE_TENANT_URL)%'
-                wrapper_class: NorvuTec\MultiTenancyBundle\Doctrine\DBAL\TenantConnection
+          default:
+              url: '%env(resolve:DATABASE_URL)%'
+              driver: 'pdo_mysql'
+              charset: utf8mb4
+              server_version: '10.6.16-MariaDB'
+              profiling_collect_backtrace: '%kernel.debug%'
+              use_savepoints: true
+          tenant:
+            url: '%env(resolve:DATABASE_URL)%'
+            driver: 'pdo_mysql'
+            charset: utf8mb4
+            server_version: '10.6.16-MariaDB'
+            profiling_collect_backtrace: '%kernel.debug%'
+            use_savepoints: true
+            wrapper_class: Norvutec\MultiTenancyBundle\Doctrine\DBAL\TenantConnection
 
     orm:
         default_entity_manager: default
@@ -37,25 +41,29 @@ doctrine:
             default:
                 connection: default
                 mappings:
-                    Main:
-                        is_bundle: false
-                        type: annotation
-                        dir: '%kernel.project_dir%/src/Entity/Main'
-                        prefix: 'App\Entity\Main'
-                        alias: Main
-                    MultiTenancyBundle:
-                        is_bundle: true
-                        type: annotation
-                        dir: 'Entity'
-                        prefix: 'MultiTenancyBundle\Entity'
-                        alias: MultiTenant
+                  System:
+                      is_bundle: false
+                      type: attribute
+                      dir: '%kernel.project_dir%/src/Entity/System'
+                      prefix: 'App\Entity\System'
+                      alias: System
             tenant:
                 connection: tenant
                 mappings:
-                    Tenant:
-                        is_bundle: false
-                        type: annotation
-                        dir: '%kernel.project_dir%/src/Entity/Tenant'
-                        prefix: 'App\Entity\Tenant'
-                        alias: Tenant
+                  Tenant:
+                    is_bundle: false
+                    type: attribute
+                    dir: '%kernel.project_dir%/src/Entity/Tenant'
+                    prefix: 'App\Entity\Tenant'
+                    alias: Tenant
 ```
+
+### Multi-Tenancy Configuration
+Create File config/packages/multi_tenancy.yaml
+```yaml
+multi_tenancy:
+  tenant_class: App\Entity\System\Tenant ## Class Implementing Tenant Interface
+  tenant_select_route: app_test2 ## Route for Tenant Selection redirection
+  tenant_migration_config: 'config/migrations/tenant.yaml' ## Migration Configuration for Tenant
+```
+
