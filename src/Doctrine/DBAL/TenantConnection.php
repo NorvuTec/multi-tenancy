@@ -14,6 +14,7 @@ use Norvutec\MultiTenancyBundle\Entity\Tenant;
 class TenantConnection extends Connection implements TenantConnectionInterface {
 
     public function useTenant(Tenant $tenant): void {
+        $params = $this->getParams();
         if ($this->isConnected()) {
             $this->close();
         }
@@ -22,15 +23,19 @@ class TenantConnection extends Connection implements TenantConnectionInterface {
         }
         if($tenant->getServerIp() != null) {
             $params['host'] = $tenant->getServerIp();
+            unset($params['url']);
         }
         if($tenant->getDatabasePort() != null) {
             $params['port'] = $tenant->getDatabasePort();
+            unset($params['url']);
         }
         if($tenant->getDatabaseUser() != null) {
             $params['user'] = $tenant->getDatabaseUser();
+            unset($params['url']);
         }
         if($tenant->getDatabasePassword() != null) {
             $params['password'] = $tenant->getDatabasePassword();
+            unset($params['url']);
         }
         parent::__construct(
             $params,
