@@ -1,7 +1,7 @@
 {
     "name": "norvutec/multi-tenancy",
     "description": "Allows multiple tenants inside a single application",
-    "version": "dev-1.0.0",
+    "version": "1.0.0",
     "type": "symfony-bundle",
     "license": "proprietary",
     "homepage": "https://norvutec.de",
@@ -9,12 +9,6 @@
         {
             "name": "NorvuTec UG (haftungsbeschränkt)",
             "email": "info@norvutec.de",
-            "homepage": "https://norvutec.de",
-            "role": "Owner"
-        },
-        {
-            "name": "Christian Linde",
-            "email": "c.linde@norvutec.de",
             "homepage": "https://norvutec.de",
             "role": "Owner"
         }
