@@ -102,7 +102,7 @@ class MultiTenancyService {
     private function getSubdomain(string $hostname) : ?string
     {
         $exploded = explode('.', $hostname);
-        if((count($exploded) >= 2)) {
+        if((count($exploded) > 2)) {
             return explode('.', $hostname)[0];
         }
         return null;
