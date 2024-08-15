@@ -38,7 +38,7 @@ readonly class TenantRequestListener {
     /**
      * @throws MultiTenancyException
      */
-    #[AsEventListener(event: KernelEvents::REQUEST)]
+    #[AsEventListener(event: KernelEvents::REQUEST, priority: 100)]
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
@@ -51,7 +51,7 @@ readonly class TenantRequestListener {
     /**
      * @throws MultiTenancyException
      */
-    #[AsEventListener(event: ConsoleEvents::COMMAND)]
+    #[AsEventListener(event: ConsoleEvents::COMMAND, priority: 100)]
     public function onConsoleCommand(ConsoleCommandEvent $event): void {
         if(!$event->getInput()->hasOption("tenant")) {
             return;
