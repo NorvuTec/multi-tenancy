@@ -46,9 +46,10 @@ class Tenant {
         return $this->identifier;
     }
 
-    public function setIdentifier(?string $identifier): void
+    public function setIdentifier(?string $identifier): self
     {
         $this->identifier = $identifier;
+        return $this;
     }
 
     public function isEnabled(): bool
@@ -56,9 +57,10 @@ class Tenant {
         return $this->enabled;
     }
 
-    public function setEnabled(bool $enabled): void
+    public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
+        return $this;
     }
 
     #[Ignore]
@@ -68,9 +70,10 @@ class Tenant {
     }
 
     #[Ignore]
-    public function setServerIp(?string $serverIp): void
+    public function setServerIp(?string $serverIp): self
     {
         $this->serverIp = $serverIp;
+        return $this;
     }
 
     #[Ignore]
@@ -80,9 +83,10 @@ class Tenant {
     }
 
     #[Ignore]
-    public function setDatabasePort(?int $databasePort): void
+    public function setDatabasePort(?int $databasePort): self
     {
         $this->databasePort = $databasePort;
+        return $this;
     }
 
     #[Ignore]
@@ -92,9 +96,10 @@ class Tenant {
     }
 
     #[Ignore]
-    public function setDatabaseName(?string $databaseName): void
+    public function setDatabaseName(?string $databaseName): self
     {
         $this->databaseName = $databaseName;
+        return $this;
     }
 
     #[Ignore]
@@ -104,9 +109,10 @@ class Tenant {
     }
 
     #[Ignore]
-    public function setDatabaseUser(?string $databaseUser): void
+    public function setDatabaseUser(?string $databaseUser): self
     {
         $this->databaseUser = $databaseUser;
+        return $this;
     }
 
     #[Ignore]
@@ -116,9 +122,10 @@ class Tenant {
     }
 
     #[Ignore]
-    public function setDatabasePassword(?string $databasePassword): void
+    public function setDatabasePassword(?string $databasePassword): self
     {
         $this->databasePassword = $databasePassword;
+        return $this;
     }
 
 }
