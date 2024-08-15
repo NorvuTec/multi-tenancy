@@ -67,7 +67,7 @@ class MultiTenancyService {
      * @return array<Tenant>
      */
     public function getAllEnabledTenants(): array {
-        return $this->defaultEntityManager->getRepository($this->tenantClass)->findBy(array("enabled" => true));
+        return array_filter($this->getAllTenants(), fn(Tenant $tenant) => $tenant->isEnabled());
     }
 
     /**
