@@ -4,6 +4,7 @@ namespace Norvutec\MultiTenancyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\MappedSuperclass;
+use Symfony\Component\Config\Definition\BooleanNode;
 use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints\Unique;
 
@@ -16,6 +17,8 @@ interface Tenant {
     public function getIdentifier(): ?string;
 
     public function isEnabled(): bool;
+
+    public function canBeLoaded(): bool;
 
     public function getServerIp(): ?string;
 

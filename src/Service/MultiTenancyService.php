@@ -80,7 +80,7 @@ class MultiTenancyService {
         if($tenant == null) {
             throw new TenantNotFoundException($subdomain);
         }
-        if(!$tenant->isEnabled()) {
+        if(!$tenant->canBeLoaded()) {
             throw new TenantNotEnabledException($subdomain);
         }
 
