@@ -1,7 +1,7 @@
 {
     "name": "norvutec/multi-tenancy",
     "description": "Allows multiple tenants inside a single application",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "type": "symfony-bundle",
     "license": "proprietary",
     "homepage": "https://norvutec.de",
@@ -21,14 +21,14 @@
         "doctrine/doctrine-bundle": "^2.12",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.2",
-        "symfony/console": "7.2.*",
-        "symfony/dotenv": "7.2.*",
+        "symfony/console": "7.3.*",
+        "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.2.*",
-        "symfony/runtime": "7.2.*",
-        "symfony/serializer": "7.2.*",
-        "symfony/validator": "7.2.*",
-        "symfony/yaml": "7.2.*"
+        "symfony/framework-bundle": "7.3.*",
+        "symfony/runtime": "7.3.*",
+        "symfony/serializer": "7.3.*",
+        "symfony/validator": "7.3.*",
+        "symfony/yaml": "7.3.*"
     },
     "config": {
         "allow-plugins": {
@@ -54,7 +54,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.2.*"
+            "require": "7.*"
         }
     }
 }
