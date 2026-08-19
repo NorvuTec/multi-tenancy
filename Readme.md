@@ -6,6 +6,12 @@ It will allow you to have multiple tenants in your application and manage them e
 The tenancy currently supports the following features:
 - Database Configuration per Tenant
 
+## Compatibility
+
+- Symfony components: `^8.0`
+- Doctrine stack: aligned to Symfony 8 compatible major versions
+- Goal: clean Symfony 8 baseline without strict minor pins
+
 ## Installation
 
 ```bash

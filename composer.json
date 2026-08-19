@@ -1,7 +1,7 @@
 {
     "name": "norvutec/multi-tenancy",
     "description": "Allows multiple tenants inside a single application",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "type": "symfony-bundle",
     "license": "proprietary",
     "homepage": "https://norvutec.de",
@@ -14,21 +14,19 @@
         }
     ],
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "doctrine/dbal": "^3",
-        "doctrine/doctrine-bundle": "^2.12",
-        "doctrine/doctrine-migrations-bundle": "^3.3",
-        "doctrine/orm": "^3.2",
-        "symfony/console": "7.3.*",
-        "symfony/dotenv": "7.3.*",
+        "doctrine/dbal": "^4.0",
+        "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/doctrine-migrations-bundle": "^4.0",
+        "doctrine/orm": "^3.6",
+        "symfony/console": "^8.0",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.3.*",
-        "symfony/runtime": "7.3.*",
-        "symfony/serializer": "7.3.*",
-        "symfony/validator": "7.3.*",
-        "symfony/yaml": "7.3.*"
+        "symfony/framework-bundle": "^8.0",
+        "symfony/serializer": "^8.0",
+        "symfony/validator": "^8.0",
+        "symfony/yaml": "^8.0"
     },
     "config": {
         "allow-plugins": {
