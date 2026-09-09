@@ -37,12 +37,7 @@ class TenantConnection extends Connection implements TenantConnectionInterface {
             $params['password'] = $tenant->getDatabasePassword();
             unset($params['url']);
         }
-        parent::__construct(
-            $params,
-            $this->_driver,
-            $this->_config,
-            $this->_eventManager
-        );
+        parent::__construct($params, $this->driver, $this->_config);
     }
 
     public function getDriverConnection(): string
