@@ -3,8 +3,6 @@
 namespace Norvutec\MultiTenancyBundle;
 
 use Norvutec\MultiTenancyBundle\DependencyInjection\MultiTenancyExtension;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
@@ -15,10 +13,6 @@ class NorvutecMultiTenancyBundle extends AbstractBundle {
         return new MultiTenancyExtension();
     }
 
-    public function registerCommands(Application $application): void {
-        parent::registerCommands($application);
-        $application->getDefinition()->addOption(new InputOption("--tenant", null, InputOption::VALUE_OPTIONAL, 'The identifier of the tenant', null));
-    }
 
     public function getPath(): string
     {
