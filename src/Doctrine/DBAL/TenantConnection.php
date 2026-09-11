@@ -42,7 +42,7 @@ class TenantConnection extends Connection implements TenantConnectionInterface {
 
     public function getDriverConnection(): string
     {
-        return $this->getDatabasePlatform()->getName();
+        return $this->getDatabasePlatform()::class;
     }
 
 }
