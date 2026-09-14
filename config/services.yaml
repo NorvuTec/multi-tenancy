@@ -11,7 +11,12 @@ services:
     autoconfigure: true
 
   Norvutec\MultiTenancyBundle\Service\MultiTenancyService:
-    arguments: ['@doctrine.orm.default_entity_manager', '@doctrine.dbal.tenant_connection', '%multi_tenancy.tenant_class%']
+    arguments:
+      - '@doctrine.orm.default_entity_manager'
+      - '@doctrine.dbal.tenant_connection'
+      - '%multi_tenancy.tenant_class%'
+      - '%app.base_domain%'
+      - ['www', 'login', 'hub', 'app', 'mail']
 
   Norvutec\MultiTenancyBundle\EventSubscriber\TenantRequestListener:
     arguments: ['@multi_tenancy.service', '@router.default', '%multi_tenancy.tenant_select_route%']
