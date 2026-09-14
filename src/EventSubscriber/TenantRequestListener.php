@@ -83,7 +83,8 @@ readonly class TenantRequestListener {
         }
 
         if($this->multiTenancyService->getCurrentTenant() == null) {
-            $redirectUrl = $this->router->generate($this->tenantSelectRoute);
+            $from = $event->getRequest()->getRequestUri();
+            $redirectUrl = $this->router->generate($this->tenantSelectRoute).'?from='.urlencode($from);
             $event->setController(function() use ($redirectUrl) {
                 return new RedirectResponse($redirectUrl);
             });

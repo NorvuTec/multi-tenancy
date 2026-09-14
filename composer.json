@@ -1,7 +1,7 @@
 {
     "name": "norvutec/multi-tenancy",
     "description": "Allows multiple tenants inside a single application",
-    "version": "1.0.15",
+    "version": "1.0.16",
     "type": "symfony-bundle",
     "license": "proprietary",
     "homepage": "https://norvutec.de",
