@@ -22,7 +22,7 @@ class MultiTenancyService {
         private EntityManagerInterface      $defaultEntityManager,
         private TenantConnectionInterface   $tenantConnection,
         private string                      $tenantClass,
-        private string                      $baseDomain = 'novt.online',
+        private string                      $baseDomain = 'orgahive.de',
         private array                       $reservedSubdomains = ['www', 'login', 'hub', 'app', 'mail'],
     ) {
         $this->baseDomain = strtolower(ltrim($this->baseDomain, '.'));
