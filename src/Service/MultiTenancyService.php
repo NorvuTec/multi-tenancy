@@ -137,7 +137,8 @@ class MultiTenancyService {
             return null;
         }
 
-        return 'cdn_'.preg_replace('/[^a-z0-9]+/', '_', $hostname);
+        // Shared key for all custom domains — avoids per-Host cache dirs from scanners.
+        return 'cdn_custom';
     }
 
     /**
