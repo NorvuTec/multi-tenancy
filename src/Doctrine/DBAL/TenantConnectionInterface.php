@@ -15,4 +15,14 @@ interface TenantConnectionInterface {
 
     public function getDriverConnection(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function getParams(): array;
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function restoreParams(array $params): void;
+
 }

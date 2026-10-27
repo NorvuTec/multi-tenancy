@@ -40,6 +40,14 @@ class TenantConnection extends Connection implements TenantConnectionInterface {
         parent::__construct($params, $this->driver, $this->_config);
     }
 
+    public function restoreParams(array $params): void
+    {
+        if ($this->isConnected()) {
+            $this->close();
+        }
+        parent::__construct($params, $this->driver, $this->_config);
+    }
+
     public function getDriverConnection(): string
     {
         return $this->getDatabasePlatform()::class;

@@ -64,6 +64,27 @@ class MultiTenancyService {
     }
 
     /**
+     * Runs a callback against a tenant database and restores the previous tenant afterwards.
+     * Used when a management-host request has to read tenant data without keeping that connection.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     * @throws MultiTenancyException
+     */
+    public function executeAsTenant(string $identifier, callable $callback): mixed
+    {
+        $previous = $this->currentTenant;
+        $previousParams = $this->tenantConnection->getParams();
+        $this->loadTenantByIdentifier($identifier);
+        try {
+            return $callback();
+        } finally {
+            $this->restoreTenantContext($previous, $previousParams);
+        }
+    }
+
+    /**
      * Returns the currently loaded tenant
      * @return Tenant|null
      */
@@ -170,6 +191,24 @@ class MultiTenancyService {
             throw new TenantConnectionException($tenant->getIdentifier() ?? '', $e);
         }
         $this->currentTenant = $tenant;
+    }
+
+    /**
+     * @param array<string, mixed> $previousParams
+     */
+    private function restoreTenantContext(?Tenant $previous, array $previousParams): void
+    {
+        if ($previous !== null && $previous->getIdentifier() !== null && $previous->getIdentifier() !== '') {
+            try {
+                $this->activateTenant($previous);
+                return;
+            } catch (\Throwable) {
+                // Fall back to the connection params from before the temporary switch.
+            }
+        }
+
+        $this->currentTenant = null;
+        $this->tenantConnection->restoreParams($previousParams);
     }
 
     private function findTenantByCustomDomain(string $hostname): ?Tenant
